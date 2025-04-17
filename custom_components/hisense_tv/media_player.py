@@ -227,6 +227,19 @@ class HisenseTvEntity(MediaPlayerEntity, HisenseTvBase):
             wakeonlan.send_magic_packet(self._mac, ip_address=self._ip_address)
         else:
             wakeonlan.send_magic_packet(self._mac)
+        
+        await asyncio.sleep(2)
+        
+        await mqtt.async_publish(
+            hass=self._hass,
+            topic=self._out_topic("/remoteapp/tv/ui_service/%s/actions/gettvstate"),
+            payload="",
+        )
+        await mqtt.async_publish(
+            hass=self._hass,
+            topic=self._out_topic("/remoteapp/tv/platform_service/%s/actions/getvolume"),
+            payload="",
+        )
 
 
     async def async_turn_off(self, **kwargs):
